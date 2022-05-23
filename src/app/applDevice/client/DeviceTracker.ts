@@ -14,6 +14,7 @@ export class DeviceTracker extends BaseDeviceTracker<ApplDeviceDescriptor, never
     private static instancesByUrl: Map<string, DeviceTracker> = new Map();
 
     public static start(hostItem: HostItem): DeviceTracker {
+      console.log('DeviceTracker.start()')
         const url = this.buildUrlForTracker(hostItem).toString();
         let instance = this.instancesByUrl.get(url);
         if (!instance) {

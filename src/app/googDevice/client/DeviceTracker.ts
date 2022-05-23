@@ -38,6 +38,7 @@ export class DeviceTracker extends BaseDeviceTracker<GoogDeviceDescriptor, never
     protected tableId = 'goog_device_list';
 
     public static start(hostItem: HostItem): DeviceTracker {
+      console.log('DeviceTracker.start()')
         const url = this.buildUrlForTracker(hostItem).toString();
         let instance = this.instancesByUrl.get(url);
         if (!instance) {
@@ -170,6 +171,7 @@ export class DeviceTracker extends BaseDeviceTracker<GoogDeviceDescriptor, never
     }
 
     protected buildDeviceRow(tbody: Element, device: GoogDeviceDescriptor): void {
+      console.log('buildDeviceRow')
         let selectedInterfaceUrl = '';
         let selectedInterfaceName = '';
         const blockClass = 'desc-block';

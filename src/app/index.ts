@@ -8,6 +8,8 @@ window.onload = async function (): Promise<void> {
     const hash = location.hash.replace(/^#!/, '');
     const parsedQuery = querystring.parse(hash);
     const action = parsedQuery.action;
+    
+    console.log('parsedQuery', parsedQuery);
 
     /// #if USE_BROADWAY
     const { BroadwayPlayer } = await import('./player/BroadwayPlayer');

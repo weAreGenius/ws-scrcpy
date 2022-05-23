@@ -16,6 +16,7 @@ export class DeviceTracker extends Mw {
     private readonly id: string;
 
     public static processChannel(ws: Multiplexer, code: string): Mw | undefined {
+      console.log('DeviceTracker.processChannel()')
         if (code !== ChannelCode.GTRC) {
             return;
         }
@@ -23,6 +24,7 @@ export class DeviceTracker extends Mw {
     }
 
     public static processRequest(ws: WS, params: RequestParameters): DeviceTracker | undefined {
+      console.log('DeviceTracker.processRequest()')
         if (params.parsedQuery?.action !== ACTION.GOOG_DEVICE_LIST) {
             return;
         }

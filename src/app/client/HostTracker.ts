@@ -46,6 +46,9 @@ export class HostTracker extends ManagerClient<ParamsBase, HostTrackerEvents> {
     }
 
     protected onSocketMessage(e: MessageEvent): void {
+        
+        console.log('HostTracker.onSocketMessage', e)
+      
         let message: Message;
         try {
             // TODO: rewrite to binary

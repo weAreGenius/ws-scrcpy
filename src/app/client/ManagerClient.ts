@@ -106,6 +106,8 @@ export abstract class ManagerClient<P extends ParamsBase, TE> extends BaseClient
                 directUrl.searchParams.set('action', action);
             }
         }
+        
+        console.log('ManagerClient-buildDirectWebSocketUrl-directUrl', directUrl);
         return directUrl;
     }
 

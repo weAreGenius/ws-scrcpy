@@ -123,6 +123,7 @@ export class DevtoolsClient extends ManagerClient<ParamsDevtools, never> {
         return d;
     }
     private createDeviceHeader(info: DevtoolsInfo): HTMLDivElement {
+      console.log('createDeviceHeader')
         const h = document.createElement('div');
         h.className = 'device-header';
         const n = document.createElement('div');
