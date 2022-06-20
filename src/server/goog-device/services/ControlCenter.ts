@@ -12,17 +12,33 @@ import * as os from 'os';
 import * as crypto from 'crypto';
 import { DeviceState } from '../../../common/DeviceState';
 
+/**
+ * 
+ * ControlCenter
+ * 
+ * 控制中心实现类
+ * 
+ * 
+ * 
+ */
 export class ControlCenter extends BaseControlCenter<GoogDeviceDescriptor> implements Service {
     private static readonly defaultWaitAfterError = 1000;
     private static instance?: ControlCenter;
 
+    /**是否已经初始化 */
     private initialized = false;
+    /** adbClient扩展类实例 */
     private client: AdbKitClient = AdbExtended.createClient();
+    /** 追踪器 */
     private tracker?: Tracker;
+    /**  */
     private waitAfterError = 1000;
     private restartTimeoutId?: Timeout;
+    /** 设备map */
     private deviceMap: Map<string, Device> = new Map();
+    /** 设备描述信息map */
     private descriptors: Map<string, GoogDeviceDescriptor> = new Map();
+    /** 控制中心唯一编码 */
     private readonly id: string;
 
     protected constructor() {
@@ -31,6 +47,9 @@ export class ControlCenter extends BaseControlCenter<GoogDeviceDescriptor> imple
         this.id = crypto.createHash('md5').update(idString).digest('hex');
     }
 
+    /**
+     * 获取控制中心实例
+     */
     public static getInstance(): ControlCenter {
         if (!this.instance) {
             this.instance = new ControlCenter();
@@ -38,10 +57,18 @@ export class ControlCenter extends BaseControlCenter<GoogDeviceDescriptor> imple
         return this.instance;
     }
 
+    /**
+     * 是否存在实例
+     * @returns 
+     */
     public static hasInstance(): boolean {
         return !!ControlCenter.instance;
     }
 
+    /**
+     * 重启追踪器
+     * @returns 
+     */
     private restartTracker = (): void => {
         if (this.restartTimeoutId) {
             return;
@@ -54,6 +81,10 @@ export class ControlCenter extends BaseControlCenter<GoogDeviceDescriptor> imple
         }, this.waitAfterError);
     };
 
+    /**
+     * 列表变化时，触发的事件
+     * @param changes 
+     */
     private onChangeSet = (changes: TrackerChangeSet): void => {
         this.waitAfterError = ControlCenter.defaultWaitAfterError;
         if (changes.added.length) {
@@ -76,12 +107,21 @@ export class ControlCenter extends BaseControlCenter<GoogDeviceDescriptor> imple
         }
     };
 
+    /**
+     * 触发设备更新事件
+     * @param device 设备
+     */
     private onDeviceUpdate = (device: Device): void => {
         const { udid, descriptor } = device;
         this.descriptors.set(udid, descriptor);
         this.emit('device', descriptor);
     };
 
+    /**
+     * 连接后对设备状态的处理
+     * @param udid 设备id
+     * @param state 状态
+     */
     private handleConnected(udid: string, state: string): void {
         let device = this.deviceMap.get(udid);
         if (device) {
@@ -93,6 +133,10 @@ export class ControlCenter extends BaseControlCenter<GoogDeviceDescriptor> imple
         }
     }
 
+    /**
+     * 初始化控制中心
+     * @returns 
+     */
     public async init(): Promise<void> {
         if (this.initialized) {
             return;
@@ -106,6 +150,10 @@ export class ControlCenter extends BaseControlCenter<GoogDeviceDescriptor> imple
         this.initialized = true;
     }
 
+    /**
+     * 开启设备追踪器
+     * @returns 
+     */
     private async startTracker(): Promise<Tracker> {
         if (this.tracker) {
             return this.tracker;
@@ -117,6 +165,9 @@ export class ControlCenter extends BaseControlCenter<GoogDeviceDescriptor> imple
         return tracker;
     }
 
+    /**
+     * 停用设备追踪器
+     */
     private stopTracker(): void {
         if (this.tracker) {
             this.tracker.off('changeSet', this.onChangeSet);
@@ -129,32 +180,61 @@ export class ControlCenter extends BaseControlCenter<GoogDeviceDescriptor> imple
         this.initialized = false;
     }
 
+    /**
+     * 获取设备描述列表
+     * @returns 
+     */
     public getDevices(): GoogDeviceDescriptor[] {
         return Array.from(this.descriptors.values());
     }
 
+    /**
+     * 获取设备
+     * @param udid 
+     * @returns 
+     */
     public getDevice(udid: string): Device | undefined {
         return this.deviceMap.get(udid);
     }
 
+    /**
+     * 获取控制中心id
+     * @returns 
+     */
     public getId(): string {
         return this.id;
     }
 
+    /**
+     * 获取控制中心名称
+     * @returns 
+     */
     public getName(): string {
         return `aDevice Tracker [${os.hostname()}]`;
     }
 
+    /**
+     * 开启控制中心
+     * @returns 
+     */
     public start(): Promise<void> {
         return this.init().catch((e) => {
             console.error(`Error: Failed to init "${this.getName()}". ${e.message}`);
         });
     }
 
+    /**
+     * 释放追踪器
+     */
     public release(): void {
         this.stopTracker();
     }
 
+    /**
+     * 运行命令行命令
+     * @param command 
+     * @returns 
+     */
     public async runCommand(command: ControlCenterCommand): Promise<void> {
         const udid = command.getUdid();
         const device = this.getDevice(udid);

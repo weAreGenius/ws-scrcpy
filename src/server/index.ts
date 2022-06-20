@@ -112,6 +112,8 @@ Promise.all(loadPlatformModulesPromises)
         return servicesToStart.map((serviceClass: ServiceClass) => {
             const service = serviceClass.getInstance();
             runningServices.push(service);
+            console.log('启动服务'+service.getName());
+            
             return service.start();
         });
     })
@@ -122,10 +124,12 @@ Promise.all(loadPlatformModulesPromises)
         
         //
         mwList.forEach((mwFactory: MwFactory) => {
+            console.log('wsService注册mwmwList：'+mwFactory);
             wsService.registerMw(mwFactory);
         });
 
         mw2List.forEach((mwFactory: MwFactory) => {
+            console.log('WebsocketMultiplexer注册mw2List：'+mwFactory);
             WebsocketMultiplexer.registerMw(mwFactory);
         });
 

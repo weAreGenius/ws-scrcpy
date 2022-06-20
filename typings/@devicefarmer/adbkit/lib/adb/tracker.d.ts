@@ -4,6 +4,10 @@ import { EventEmitter } from 'events';
 import { Device } from '../Device';
 import HostDevicesCommand from './command/host/devices';
 import HostDevicesWithPathsCommand from './command/host/deviceswithpaths';
+
+/**
+ * 追踪器
+ */
 declare class Tracker extends EventEmitter {
     private readonly command;
     private deviceList;

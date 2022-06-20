@@ -3,6 +3,11 @@ import { ExtendedSync } from './ExtendedSync';
 import { SyncCommand } from './command/host-transport/sync';
 import { Multiplexer } from '../../../packages/multiplexer/Multiplexer';
 
+
+/**
+ * client扩展类
+ * 
+ */
 export class ExtendedClient extends Client {
     public async pipeSyncService(serial: string): Promise<ExtendedSync> {
         const transport = await this.transport(serial);

@@ -9,12 +9,28 @@ import { DeviceTrackerEventList } from '../../../types/DeviceTrackerEventList';
 import { Multiplexer } from '../../../packages/multiplexer/Multiplexer';
 import { ChannelCode } from '../../../common/ChannelCode';
 
+/**
+ * DeviceTracker
+ * 
+ * 设备追踪器
+ * 
+ */
 export class DeviceTracker extends Mw {
     public static readonly TAG = 'DeviceTracker';
     public static readonly type = 'android';
+
+    /**
+     * 控制中心
+     */
     private adt: ControlCenter = ControlCenter.getInstance();
     private readonly id: string;
 
+    /**
+     * 处理channel
+     * @param ws 
+     * @param code 
+     * @returns 
+     */
     public static processChannel(ws: Multiplexer, code: string): Mw | undefined {
       console.log('DeviceTracker.processChannel()')
         if (code !== ChannelCode.GTRC) {
@@ -23,6 +39,12 @@ export class DeviceTracker extends Mw {
         return new DeviceTracker(ws);
     }
 
+    /**
+     * 处理request
+     * @param ws 
+     * @param params 
+     * @returns 
+     */
     public static processRequest(ws: WS, params: RequestParameters): DeviceTracker | undefined {
       console.log('DeviceTracker.processRequest()')
         if (params.parsedQuery?.action !== ACTION.GOOG_DEVICE_LIST) {
@@ -46,6 +68,10 @@ export class DeviceTracker extends Mw {
             });
     }
 
+    /**
+     * 发送设备信息
+     * @param device 
+     */
     private sendDeviceMessage = (device: GoogDeviceDescriptor): void => {
         const data: DeviceTrackerEvent<GoogDeviceDescriptor> = {
             device,

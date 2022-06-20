@@ -2,13 +2,22 @@ import Adb from '@devicefarmer/adbkit/lib/adb';
 import { ExtendedClient } from './ExtendedClient';
 import { ClientOptions } from '@devicefarmer/adbkit/lib/ClientOptions';
 
+/** 创建adbclient的参数项 */
 interface Options {
     host?: string;
     port?: number;
     bin?: string;
 }
 
+/** adb扩展类 */
 export class AdbExtended extends Adb {
+
+   /**
+    * 创建adbclient
+    * @param options 
+    * 
+    * @returns client扩展类
+    */
     static createClient(options: Options = {}): ExtendedClient {
         const opts: ClientOptions = {
             bin: options.bin,
